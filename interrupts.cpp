@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     /******************ADD YOUR VARIABLES HERE*************************/
 
     int current_time = 0;                    // Current simulation time in ms
-    std::vector<std::string> execution_log;  // Store execution events
+    std::vector<std::string> execution_log;  // Store execution events (UNSURE IF EVER USED?)
 
     // Constants for interrupt processing times
     const int SWITCH_MODE_TIME = 1;          // Switch to/from kernel mode
@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
     const int IRET_TIME = 1;                 // IRET instruction? Ask prof on what that is?
 
     // State tracking variables
-    bool in_kernel_mode = false;  // user of kernel mode
+    bool in_user_mode = true;  // user or kernel mode
     bool processing_interrupt = false;  // interrupt processing flag
     int device_number = -1;  // current device
 
@@ -46,19 +46,76 @@ int main(int argc, char** argv) {
         //log_event(current_time, duration_intr, "CPU execution"); helper function needed
         current_time += duration_intr;
 
-        if(activity == "CPU"){
+        if (activity == "CPU") {
+            // Handle CPU burst - simple execution in user mode
+            execution += std::to_string(current_time) + ", " + 
+                        std::to_string(duration_intr) + ", CPU execution\n";
+            current_time += duration_intr;
 
-        } 
+        } else if (activity == "SYSCALL") {
+            device_number = duration_intr;
+            processing_interrupt = true;
+            in_user_mode = false; // enter kernel mode by switching mode bit to 0 (false) 
 
-        if(activity == "SYSCALL"){
-            in_kernel_mode = true; // switch to kernel mode
-            //
-
-
-        }
-
-        if(activity == "END_IO"){
+            // Use the boilerplate function for standard interrupt steps
+            auto [boilerplate_log, new_current_time] = intr_boilerplate(current_time, device_number, CONTEXT_SAVE_RESTORE_TIME, vectors);
+           
+            // Append the execution logging to the string   
+            execution += boilerplate_log;
+            // Adjust current time with the ISR activities duration
+            current_time = new_current_time;
             
+            
+            /** 
+            // Execute ISR body (device driver activities)
+            int device_delay = delays[device_number];
+            int isr_activities = device_delay / ISR_ACTIVITY_TIME;
+            
+            // Handle any remaining time that doesn't fit evenly into 40ms chunks
+            int remaining_time = device_delay % ISR_ACTIVITY_TIME;
+            
+            for (int i = 0; i < isr_activities; i++) {
+                execution += std::to_string(current_time) + ", " + 
+                            std::to_string(ISR_ACTIVITY_TIME) + ", " + 
+                            "ISR activity " + std::to_string(i+1) + "\n";
+                current_time += ISR_ACTIVITY_TIME;
+            }
+            
+            // Add remaining time as a final ISR activity if needed
+            if (remaining_time > 0) {
+                execution += std::to_string(current_time) + ", " + 
+                            std::to_string(remaining_time) + ", " + 
+                            "ISR activity " + std::to_string(isr_activities + 1) + "\n";
+                current_time += remaining_time;
+            }
+            */
+        }
+        else if (activity == "END IO") {  // Note: Space, not underscore
+            int end_device_number = duration_intr;
+            
+            // Execute IRET (return from enterrupt) instruction
+            execution += std::to_string(current_time) + ", " + 
+                        std::to_string(IRET_TIME) + ", IRET\n";
+            current_time += IRET_TIME;
+            
+            // Restore context that occurs as we switch from OS services to user program
+            execution += std::to_string(current_time) + ", " + 
+                        std::to_string(CONTEXT_SAVE_RESTORE_TIME) + ", context restored\n";
+            current_time += CONTEXT_SAVE_RESTORE_TIME;
+            
+            // Switch back to user mode 
+            execution += std::to_string(current_time) + ", " + 
+                        std::to_string(SWITCH_MODE_TIME) + ", switch to user mode\n";
+            current_time += SWITCH_MODE_TIME;
+            
+            // Log end of I/O (duration 0 as shown in example)
+            execution += std::to_string(current_time) + ", " + 
+                        std::to_string(0) + ", end of I/O " + std::to_string(end_device_number) + ": interrupt\n";
+            
+            // Update state
+            in_user_mode = true;
+            processing_interrupt = false;
+            device_number = -1;
         }
         /************************************************************************/
 
