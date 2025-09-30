@@ -21,11 +21,11 @@ int main(int argc, char** argv) {
     /******************ADD YOUR VARIABLES HERE*************************/
 
     int current_time = 0;                    // Current simulation time in ms
-    std::vector<std::string> execution_log;  // Store execution events (UNSURE IF EVER USED?)
+    std::vector<std::string> execution_log;  // Store execution events   (CONFUSED do we need this, ask PROF)
 
     // Constants for interrupt processing times
     const int SWITCH_MODE_TIME = 1;          // Switch to/from kernel mode
-    const int CONTEXT_SAVE_RESTORE_TIME = 10; // Save/restore context
+    const int CONTEXT_SAVE_RESTORE_TIME = 10; // Save/restore context    (CONFUSED, ON EXAMPLE IT SHOWS 1 and 2 seconds, is it suppose to be 10 for two context switches?)
     const int FIND_VECTOR_TIME = 1;          // Find vector (ISR start address) in memory
     const int GET_ISR_TIME = 1;              // Obtain ISR address from vector table
     const int ISR_ACTIVITY_TIME = 40;        // Execute activities in ISR
@@ -89,15 +89,12 @@ int main(int argc, char** argv) {
                 current_time += remaining_time;
             }
             */
-        }
-        else if (activity == "END IO") {  // Note: Space, not underscore
+        } else if (activity == "END_IO") {  // Note: Space, not underscore
             int end_device_number = duration_intr;
             
-            // Execute IRET (return from enterrupt) instruction
-            execution += std::to_string(current_time) + ", " + 
-                        std::to_string(IRET_TIME) + ", IRET\n";
-            current_time += IRET_TIME;
-            
+            // CONFUSED ON ORDERRRRRR, do we do context switch and user mode switch first, or the IRET first?
+
+
             // Restore context that occurs as we switch from OS services to user program
             execution += std::to_string(current_time) + ", " + 
                         std::to_string(CONTEXT_SAVE_RESTORE_TIME) + ", context restored\n";
@@ -108,9 +105,14 @@ int main(int argc, char** argv) {
                         std::to_string(SWITCH_MODE_TIME) + ", switch to user mode\n";
             current_time += SWITCH_MODE_TIME;
             
-            // Log end of I/O (duration 0 as shown in example)
+            // Execute IRET (return from enterrupt) instruction
             execution += std::to_string(current_time) + ", " + 
-                        std::to_string(0) + ", end of I/O " + std::to_string(end_device_number) + ": interrupt\n";
+                        std::to_string(IRET_TIME) + ", IRET\n";
+            current_time += IRET_TIME;
+
+            // Log end of I/O
+            execution += std::to_string(current_time) + ", " + 
+                        std::to_string(duration_intr) + ", end of I/O " + std::to_string(end_device_number) + ": interrupt\n";
             
             // Update state
             in_user_mode = true;
