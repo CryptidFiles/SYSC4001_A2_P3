@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     /******************ADD YOUR VARIABLES HERE*************************/
 
     int current_time = 0;                    // Current simulation time in ms
-    std::vector<std::string> execution_log;  // Store execution events 
+    std::vector<std::string> execution_log;  // Store execution events
 
     // Constants for interrupt processing times
     const int SWITCH_MODE_TIME = 1;          // Switch to/from kernel mode
@@ -64,19 +64,19 @@ int main(int argc, char** argv) {
             current_time = new_current_time;
             
             // Execute ISR body (device driver activities)
-            execution += std::to_string(current_time) + ", " + std::to_string(ISR_ACTIVITY_TIME) + ", " + "call device driver" + "\n";
+            execution += std::to_string(current_time) + ", " + std::to_string(ISR_ACTIVITY_TIME) + ", " + 
+                            "call device driver " + "\n";
             current_time += ISR_ACTIVITY_TIME;
-                
             
-        } else if (activity == "END_IO") { 
-            // Set the device number used as the input command's second argument
+        }
+        else if (activity == "END IO") {  // Note: Space, not underscore
             int end_device_number = duration_intr;
             
             // Execute IRET (return from enterrupt) instruction
             execution += std::to_string(current_time) + ", " + 
                         std::to_string(IRET_TIME) + ", IRET\n";
             current_time += IRET_TIME;
-
+            
             // Restore context that occurs as we switch from OS services to user program
             execution += std::to_string(current_time) + ", " + 
                         std::to_string(CONTEXT_SAVE_RESTORE_TIME) + ", context restored\n";
@@ -86,11 +86,10 @@ int main(int argc, char** argv) {
             execution += std::to_string(current_time) + ", " + 
                         std::to_string(SWITCH_MODE_TIME) + ", switch to user mode\n";
             current_time += SWITCH_MODE_TIME;
-
-            // Log end of I/O
+            
+            // Log end of I/O (duration 0 as shown in example)
             execution += std::to_string(current_time) + ", " + 
-                        std::to_string(delays[end_device_number]) + ", end of I/O " + std::to_string(end_device_number) + ": interrupt\n\n";
-            current_time += delays[end_device_number];
+                        std::to_string(delays[end_device_number]) + ", end of I/O " + std::to_string(end_device_number) + ": interrupt\n";
             
             // Update state
             in_user_mode = true;
