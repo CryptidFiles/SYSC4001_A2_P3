@@ -14,6 +14,8 @@
 
 #define ADDR_BASE   0
 #define VECTOR_SIZE 2
+#define FIND_VECTOR_TIME 1
+#define GET_ISR_TIME 1
 
 #define CPU_SPEED   100
 #define MEM_LIMIT   1
@@ -115,11 +117,11 @@ std::pair<std::string, int> intr_boilerplate(int current_time, int intr_num, int
     sprintf(vector_address_c, "0x%04X", (ADDR_BASE + (intr_num * VECTOR_SIZE)));
     std::string vector_address(vector_address_c);
 
-    execution += std::to_string(current_time) + ", " + std::to_string(1) + ", find vector " + std::to_string(intr_num) 
+    execution += std::to_string(current_time) + ", " + std::to_string(FIND_VECTOR_TIME) + ", find vector " + std::to_string(intr_num) 
                     + " in memory position " + vector_address + "\n";
     current_time++;    
 
-    execution += std::to_string(current_time) + ", " + std::to_string(1) + ", load address " + vectors.at(intr_num) + " into the PC\n";
+    execution += std::to_string(current_time) + ", " + std::to_string(GET_ISR_TIME) + ", load address " + vectors.at(intr_num) + " into the PC\n";
     current_time++;
 
     return std::make_pair(execution, current_time);
