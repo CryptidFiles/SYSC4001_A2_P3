@@ -23,12 +23,17 @@ int main(int argc, char** argv) {
     /******************ADD YOUR VARIABLES HERE*************************/
 
     int current_time = 0;                    // Current simulation time in ms
+
+    int total_CPU_time = 0;
+    int total_IO_time = 0;
+    int total_overhead_time = 0;
+
     std::vector<std::string> execution_log;  // Store execution events
 
     // Constants for interrupt processing times
     const int SWITCH_MODE_TIME = 1;          // Switch to/from kernel mode
-    const int CONTEXT_SAVE_RESTORE_TIME = 10; // Save/restore context    (CONFUSED, ON EXAMPLE IT SHOWS 1 and 2 seconds, is it suppose to be 10 for two context switches?)
-    const int ISR_ACTIVITY_TIME = 40;        // Execute activities in ISR
+    const int CONTEXT_SAVE_RESTORE_TIME = 30; // Save/restore context    (CONFUSED, ON EXAMPLE IT SHOWS 1 and 2 seconds, is it suppose to be 10 for two context switches?)
+    const int ISR_ACTIVITY_TIME = 20;        // Execute activities in ISR
     const int IRET_TIME = 1;                 // IRET instruction? Ask prof on what that is?
 
     // State tracking variables
@@ -49,7 +54,7 @@ int main(int argc, char** argv) {
     //parse each line of the input trace file
     while(std::getline(input_file, trace)) {
         auto [activity, duration_intr] = parse_trace(trace);
-
+        
         /******************ADD YOUR SIMULATION CODE HERE*************************/
 
         if (activity == "CPU") {
@@ -57,6 +62,8 @@ int main(int argc, char** argv) {
             execution += std::to_string(current_time) + ", " + 
                 std::to_string(scaled) + ", CPU execution\n\n";
             current_time += scaled;
+
+            total_CPU_time += duration_intr; // TESTING
 
         } else if (activity == "SYSCALL") {
             device_number = duration_intr;
@@ -68,6 +75,8 @@ int main(int argc, char** argv) {
            
             // Append the execution logging to the string   
             execution += boilerplate_log;
+            total_overhead_time += duration_intr; // TESTING
+
             // Adjust current time with the ISR activities duration
             current_time = new_current_time;
               
@@ -85,28 +94,34 @@ int main(int argc, char** argv) {
                             "transfer data from device to memory\n";
             current_time += ISR_ACTIVITY_TIME;
 
+
             // Calculate remaining time determined to carry out rest of device delay for error handling purposes
             int remaining_time = device_delay - (2 * ISR_ACTIVITY_TIME);
             if(remaining_time > 0){
                 execution += std::to_string(current_time) + ", " + std::to_string(remaining_time) + 
                             ", check for errors\n";
                 current_time += remaining_time;
+
+                total_IO_time += remaining_time; // TESTING
             }
 
             // Execute IRET (return from enterrupt) instruction
             execution += std::to_string(current_time) + ", " + 
                         std::to_string(IRET_TIME) + ", IRET\n";
             current_time += IRET_TIME;
+            total_overhead_time += IRET_TIME; // TESTING
             
             // Restore context that occurs as we switch from OS services to user program
             execution += std::to_string(current_time) + ", " + 
                         std::to_string(CONTEXT_SAVE_RESTORE_TIME) + ", context restored\n";
             current_time += CONTEXT_SAVE_RESTORE_TIME;
+            total_overhead_time += CONTEXT_SAVE_RESTORE_TIME; // TESTING
             
             // Switch back to user mode 
             execution += std::to_string(current_time) + ", " + 
                         std::to_string(SWITCH_MODE_TIME) + ", switch to user mode\n\n";
             current_time += SWITCH_MODE_TIME;
+            total_overhead_time += SWITCH_MODE_TIME; // TESTING
 
             // Update state
             in_user_mode = true;
@@ -123,6 +138,8 @@ int main(int argc, char** argv) {
 
             // Append the execution logging to the string   
             execution += boilerplate_log;
+            total_overhead_time += duration_intr; // TESTING
+
             // Adjust current time with the ISR activities duration
             current_time = new_current_time;
 
@@ -135,28 +152,37 @@ int main(int argc, char** argv) {
                             "ENDIO: run the ISR (device driver)\n";
             current_time += ISR_ACTIVITY_TIME;
 
+            total_IO_time += ISR_ACTIVITY_TIME; // TESTING
+
+
             // Calculate remaining time determined to carry out rest of device delay for error handling purposes
             int remaining_time = device_delay - ISR_ACTIVITY_TIME;
             if(remaining_time > 0){
                 execution += std::to_string(current_time) + ", " + std::to_string(remaining_time) + 
                             ", check device status\n";
                 current_time += remaining_time;
+
+                total_IO_time += remaining_time; // TESTING
             }
 
             // Execute IRET (return from enterrupt) instruction
             execution += std::to_string(current_time) + ", " + 
                         std::to_string(IRET_TIME) + ", IRET\n";
             current_time += IRET_TIME;
+            total_overhead_time += IRET_TIME; // TESTING
             
             // Restore context that occurs as we switch from OS services to user program
             execution += std::to_string(current_time) + ", " + 
                         std::to_string(CONTEXT_SAVE_RESTORE_TIME) + ", context restored\n";
             current_time += CONTEXT_SAVE_RESTORE_TIME;
-            
+            total_overhead_time += CONTEXT_SAVE_RESTORE_TIME; // TESTING
+
+
             // Switch back to user mode 
             execution += std::to_string(current_time) + ", " + 
                         std::to_string(SWITCH_MODE_TIME) + ", switch to user mode\n\n";
             current_time += SWITCH_MODE_TIME;
+            total_overhead_time += SWITCH_MODE_TIME; // TESTING
 
             // Update state
             in_user_mode = true;
@@ -170,6 +196,8 @@ int main(int argc, char** argv) {
         }
         /************************************************************************/
     }
+
+    execution += "CPU: " + std::to_string(total_CPU_time) + "ms   I/O: " + std::to_string(total_IO_time) + "ms   Overhead: " + std::to_string(total_overhead_time) + "ms\n";
 
     input_file.close();
     write_output(execution);

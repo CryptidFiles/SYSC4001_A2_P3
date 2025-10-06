@@ -13,7 +13,7 @@
 #include<stdio.h>
 
 #define ADDR_BASE   0
-#define VECTOR_SIZE 2
+#define VECTOR_SIZE 8
 #define FIND_VECTOR_TIME 1
 #define GET_ISR_TIME 1
 
