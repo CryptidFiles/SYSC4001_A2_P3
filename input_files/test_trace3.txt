@@ -1,0 +1,13 @@
+CPU, 300
+SYSCALL, 8    # Very slow device (1000ms)
+END_IO, 8
+CPU, 300
+SYSCALL, 19    # Slow device (652ms)  
+END_IO, 19
+CPU, 300
+SYSCALL, 3    # Moderatly Slow device (300ms)  
+END_IO, 3
+CPU, 300
+SYSCALL, 3     # Slow device
+END_IO, 3
+CPU, 300

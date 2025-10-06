@@ -1,0 +1,9 @@
+# trace_high_overhead.txt
+CPU, 50
+SYSCALL, 15    # Very fast device (68ms)
+CPU, 45
+END_IO, 15
+CPU, 68
+SYSCALL, 8    # Very slow device (1000ms)
+CPU, 32
+END_IO, 8
