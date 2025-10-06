@@ -28,8 +28,8 @@ int main(int argc, char** argv) {
 
     // Constants for interrupt processing times
     const int SWITCH_MODE_TIME = 1;          // Switch to/from kernel mode
-    const int CONTEXT_SAVE_RESTORE_TIME = 30; // Save/restore context    (CONFUSED, ON EXAMPLE IT SHOWS 1 and 2 seconds, is it suppose to be 10 for two context switches?)
-    const int ISR_ACTIVITY_TIME = 20;        // Execute activities in ISR
+    const int CONTEXT_SAVE_RESTORE_TIME = 10; // Save/restore context 
+    const int ISR_ACTIVITY_TIME = 40;        // Execute activities in ISR
     const int IRET_TIME = 1;                 // IRET instruction? Ask prof on what that is?
 
     // State tracking variables
