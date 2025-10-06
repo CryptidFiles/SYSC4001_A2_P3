@@ -1,6 +1,2 @@
-if [ ! -d "bin" ]; then
-    mkdir bin
-else
-	rm bin/*
-fi
-g++ -g -O0 -I . -o bin/interrupts interrupts.cpp
+#!/bin/bash
+g++ -std=c++17 interrupts.cpp -o bin/interrupts_sim

@@ -5,7 +5,9 @@
  *
  */
 
-#include<interrupts.hpp>
+#include "interrupts.hpp"
+#include <cstdlib>
+#include <cmath>
 
 int main(int argc, char** argv) {
 
@@ -34,6 +36,14 @@ int main(int argc, char** argv) {
     bool processing_interrupt = false;  // interrupt processing flag
     int device_number = -1;  // current device
 
+    // CPU speed multiplier
+    double CPU_SPEED_MULT = 1.0;
+	if (const char* e = std::getenv("CPU_SPEED")) {
+		try { CPU_SPEED_MULT = std::stod(e); } catch (...) { CPU_SPEED_MULT = 1.0; }
+		if (CPU_SPEED_MULT <= 0.0) CPU_SPEED_MULT = 1.0;
+	}
+
+
     /******************************************************************/
 
     //parse each line of the input trace file
@@ -43,10 +53,10 @@ int main(int argc, char** argv) {
         /******************ADD YOUR SIMULATION CODE HERE*************************/
 
         if (activity == "CPU") {
-            // Handle CPU burst - simple execution in user mode
+            int scaled = (int) std::llround((double)duration_intr / CPU_SPEED_MULT);
             execution += std::to_string(current_time) + ", " + 
-                        std::to_string(duration_intr) + ", CPU execution\n\n";
-            current_time += duration_intr;
+                std::to_string(scaled) + ", CPU execution\n\n";
+            current_time += scaled;
 
         } else if (activity == "SYSCALL") {
             device_number = duration_intr;
@@ -61,7 +71,6 @@ int main(int argc, char** argv) {
             // Adjust current time with the ISR activities duration
             current_time = new_current_time;
               
-            
             // Delay of device direclty taken from device table 
             int device_delay = delays[device_number];
 
@@ -71,12 +80,10 @@ int main(int argc, char** argv) {
                             "SYSCALL: run the ISR (call device driver)\n";
             current_time += ISR_ACTIVITY_TIME;
 
-
             // Second Activity: transfer data
             execution += std::to_string(current_time) + ", " + std::to_string(ISR_ACTIVITY_TIME) + ", " + 
                             "transfer data from device to memory\n";
             current_time += ISR_ACTIVITY_TIME;
-
 
             // Calculate remaining time determined to carry out rest of device delay for error handling purposes
             int remaining_time = device_delay - (2 * ISR_ACTIVITY_TIME);
@@ -162,12 +169,9 @@ int main(int argc, char** argv) {
 
         }
         /************************************************************************/
-
     }
 
     input_file.close();
-
     write_output(execution);
-
     return 0;
 }

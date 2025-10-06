@@ -1,0 +1,21 @@
+case_id,trace_path,context_ms,isr_ms,vector_bytes,cpu_speed,output_path,notes
+1,trace.txt,10,40,2,1.0,output_files/execution_case_01.txt,Baseline (original parameters)
+2,trace.txt,10,40,2,1.0,output_files/execution_case_02.txt,Context sweep control
+3,trace.txt,20,40,2,1.0,output_files/execution_case_03.txt,Context increased
+4,trace.txt,30,40,2,1.0,output_files/execution_case_04.txt,Context max
+5,trace.txt,10,40,2,1.0,output_files/execution_case_05.txt,Vector sweep control
+6,trace.txt,10,40,4,1.0,output_files/execution_case_06.txt,Vector 4 bytes
+7,trace.txt,10,40,8,1.0,output_files/execution_case_07.txt,Vector 8 bytes
+8,trace.txt,10,40,2,0.5,output_files/execution_case_08.txt,CPU 0.5x (slow CPU)
+9,trace.txt,10,40,2,1.0,output_files/execution_case_09.txt,CPU control
+10,trace.txt,10,40,2,2.0,output_files/execution_case_10.txt,CPU 2x
+11,trace.txt,10,40,2,4.0,output_files/execution_case_11.txt,CPU 4x
+12,trace.txt,10,40,2,1.0,output_files/execution_case_12.txt,ISR sweep control
+13,trace.txt,10,80,2,1.0,output_files/execution_case_13.txt,ISR increased
+14,trace.txt,10,120,2,1.0,output_files/execution_case_14.txt,ISR increased
+15,trace.txt,10,160,2,1.0,output_files/execution_case_15.txt,ISR increased
+16,trace.txt,10,200,2,1.0,output_files/execution_case_16.txt,ISR max
+17,trace.txt,10,200,2,1.0,output_files/execution_case_17.txt,"Fast context, slow ISR"
+18,trace.txt,30,40,2,1.0,output_files/execution_case_18.txt,"Slow context, fast ISR"
+19,trace.txt,30,200,8,1.0,output_files/execution_case_19.txt,Worst overhead combo
+20,trace.txt,10,40,2,4.0,output_files/execution_case_20.txt,Best-case (fast CPU)
