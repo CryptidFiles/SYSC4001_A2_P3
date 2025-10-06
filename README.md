@@ -70,7 +70,6 @@ Example:
 12  0x1B
 20  0x28
 22  0x16
-```
 
 ### `device_table.txt`
 Example:
