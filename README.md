@@ -12,18 +12,22 @@ The goal is to simulate the operation of interrupts and analyze how timing param
 ___________________________________________________________________________________________________________
 ## 🧩 Project Structure
 
+```plaintext
 SYSC4001_A1/
- ┣ .vscode/                     # Optional editor settings
- ┣ bin/                         # Compiled executable (after running build.sh)
- ┣ build.sh                     # Build script to compile the simulator
- ┣ device_table.txt             # Device number vs. I/O delay table
- ┣ vector_table.txt             # Vector table (device → ISR address)
- ┣ trace.txt                    # Input trace (single program execution trace)
- ┣ interrupts.cpp               # Main simulator implementation
- ┣ interrupts.hpp               # Helper functions and data structures
- ┣ execution.txt                # Sample output (used for debugging)
- ┗ output_files/                # Folder containing execution_case_01.txt … execution_case_20.txt
-
+├── .vscode/                     # Optional editor settings
+├── bin/                         # Compiled executable (after running build.sh)
+├── README.md                    # Project documentation
+├── build.sh                     # Build script to compile the simulator
+├── device_table.txt             # Device number vs. I/O delay table
+├── execution.txt                # Sample output (used for debugging)
+├── experiments_plan_final.csv   # CSV file summarizing 20 test case parameters
+├── interrupts.cpp               # Main simulator implementation
+├── interrupts.hpp               # Helper functions and data structures
+├── output_files/                # Folder containing execution_case_01.txt … execution_case_20.txt
+├── run.sh                       # Alternative run script for quick execution
+├── trace.txt                    # Input trace (single program execution trace)
+└── vector_table.txt             # Vector table (device → ISR address)
+```
 ___________________________________________________________________________________________________________
 ## ⚙️ How to Build
 
