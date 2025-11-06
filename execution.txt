@@ -1,47 +1,39 @@
-0, 50, CPU execution
+0, 1, switch to kernel mode
+1, 10, context saved
+11, 1, find vector 2 in memory position 0x0004
+12, 1, load address 0X0695 into the PC
+13, 10, cloning the PCB
+23, 0, scheduler called
+23, 1, IRET
 
-50, 1, switch to kernel mode
-51, 10, context saved
-61, 1, find vector 15 in memory position 0x0078
-62, 1, load address 0X0584 into the PC
-63, 40, SYSCALL: run the ISR (call device driver)
-103, 40, transfer data from device to memory
-143, 1, IRET
-144, 10, context restored
-154, 1, switch to user mode
+24, 1, switch to kernel mode
+25, 10, context saved
+35, 1, find vector 3 in memory position 0x0006
+36, 1, load address 0X042B into the PC
+37, 50, Program is 10 Mb large
+87, 150, loading program into memory
+237, 3, marking partition as occupied
+240, 6, updating PCB
+246, 0, scheduler called
+246, 1, IRET
 
-155, 1, switch to kernel mode
-156, 10, context saved
-166, 1, find vector 15 in memory position 0x0078
-167, 1, load address 0X0584 into the PC
-168, 40, ENDIO: run the ISR (device driver)
-208, 28, check device status
-236, 1, IRET
-237, 10, context restored
-247, 1, switch to user mode
+247, 100, CPU Burst
 
-248, 50, CPU execution
+347, 1, switch to kernel mode
+348, 10, context saved
+358, 1, find vector 3 in memory position 0x0006
+359, 1, load address 0X042B into the PC
+360, 25, Program is 15 Mb large
+385, 225, loading program into memory
+610, 3, marking partition as occupied
+613, 6, updating PCB
+619, 0, scheduler called
+619, 1, IRET
 
-298, 1, switch to kernel mode
-299, 10, context saved
-309, 1, find vector 1 in memory position 0x0008
-310, 1, load address 0X029C into the PC
-311, 40, SYSCALL: run the ISR (call device driver)
-351, 40, transfer data from device to memory
-391, 20, check for errors
-411, 1, IRET
-412, 10, context restored
-422, 1, switch to user mode
-
-423, 1, switch to kernel mode
-424, 10, context saved
-434, 1, find vector 1 in memory position 0x0008
-435, 1, load address 0X029C into the PC
-436, 40, ENDIO: run the ISR (device driver)
-476, 60, check device status
-536, 1, IRET
-537, 10, context restored
-547, 1, switch to user mode
-
-548, 50, CPU execution
+620, 1, switch to kernel mode
+621, 10, context saved
+631, 1, find vector 4 in memory position 0x0008
+632, 1, load address 0X0292 into the PC
+633, 250, SYSCALL ISR (ADD STEPS HERE)
+883, 1, IRET
 
