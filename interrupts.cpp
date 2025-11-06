@@ -13,7 +13,6 @@
 // Global variables for process management
 std::vector<PCB> PCB_table;
 unsigned int next_pid = 1;
-std::queue<PCB*> ready_queue;
 
 // Constants for interrupt processing times
 const int SWITCH_MODE_TIME = 1;          // Switch to/from kernel mode
@@ -41,7 +40,7 @@ PCB create_child_pcb(const PCB& parent, const std::string& program_name = "") {
     return child;
 }
 
-// Function to add process to ready queue
+/**  Function to add process to ready queue
 void add_to_ready_queue(PCB& process) {
     ready_queue.push(&process);
 }
@@ -52,7 +51,7 @@ PCB* get_next_process() {
     PCB* process = ready_queue.front();
     ready_queue.pop();
     return process;
-}
+}*/
 
 
 
@@ -99,6 +98,10 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
             device_number = -1;
 
         } else if(activity == "END_IO") {
+            device_number = duration_intr;
+            processing_interrupt = true;
+            in_user_mode = false; // enter kernel mode by switching mode bit to 0 (false) 
+
             auto [intr, time] = intr_boilerplate(current_time, duration_intr, 10, vectors);
             current_time = time;
             execution += intr;
@@ -129,15 +132,15 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
             PCB child = create_child_pcb(current);
 
             if (allocate_memory(&child)) {
-                // Update parent state to "waiting" in PCB table
-                for (auto& p : PCB_table) {
-                    if (p.PID == current.PID) {
-                        // Keep parent info but mark as waiting
-                    }
-                }
+                // Remove any existing processes with same PIDs
+                PCB_table.erase(std::remove_if(PCB_table.begin(), PCB_table.end(),
+                    [&](const PCB& p) { 
+                        return p.PID == current.PID || p.PID == child.PID; 
+                    }), 
+                PCB_table.end());
 
-                // Add child
-                PCB_table.push_back(child);  
+                // Add child 
+                PCB_table.push_back(child);   
 
                 execution += std::to_string(current_time) + ", 0, scheduler called\n";
                 // Note: scheduler is empty as per requirements
@@ -326,6 +329,7 @@ int main(int argc, char** argv) {
 
     //Make initial PCB (notice how partition is not assigned yet)
     PCB current(0, -1, "init", 1, -1);
+
     //Update memory (partition is assigned here, you must implement this function)
     if(!allocate_memory(&current)) {
         std::cerr << "ERROR! Memory allocation failed!" << std::endl;
