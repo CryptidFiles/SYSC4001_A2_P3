@@ -11,7 +11,7 @@
 #include <queue>
 
 // Global variables for process management
-std::vector<PCB> PCB_table;
+//std::vector<PCB> PCB_table;
 unsigned int next_pid = 1;
 
 // Constants for interrupt processing times
@@ -133,14 +133,14 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
 
             if (allocate_memory(&child)) {
                 // Remove any existing processes with same PIDs
-                PCB_table.erase(std::remove_if(PCB_table.begin(), PCB_table.end(),
+                wait_queue.erase(std::remove_if(wait_queue.begin(), wait_queue.end(),
                     [&](const PCB& p) { 
                         return p.PID == current.PID || p.PID == child.PID; 
                     }), 
-                PCB_table.end());
+                wait_queue.end());
 
-                // Add child 
-                PCB_table.push_back(child);   
+                // Add parent to the waiting queue as we assume the child runs first with no preemption
+                wait_queue.push_back(current);   
 
                 execution += std::to_string(current_time) + ", 0, scheduler called\n";
                 // Note: scheduler is empty as per requirements
@@ -150,7 +150,7 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
 
                 // Add system status output
                 system_status += "time: " + std::to_string(current_time) + "; current trace: " + trace + "\n";
-                system_status += print_PCB(child, PCB_table);
+                system_status += print_PCB(child, wait_queue);
 
 
                 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -229,9 +229,9 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
             temp_pcb.partition_number = -1;
 
             // UPDATE PCB TABLE - Remove old entries for this PID
-            PCB_table.erase(std::remove_if(PCB_table.begin(), PCB_table.end(),
+            wait_queue.erase(std::remove_if(wait_queue.begin(), wait_queue.end(),
             [&](const PCB& p) { return p.PID == current.PID; }), 
-            PCB_table.end());
+            wait_queue.end());
 
 
             // Use existing allocate_memory function to find and allocate memory
@@ -266,7 +266,7 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
 
                 // Add system status output
                 system_status += "time: " + std::to_string(current_time) + "; current trace: " + trace + "\n";
-                system_status += print_PCB(current, PCB_table);
+                system_status += print_PCB(current, wait_queue);
 
                 // Load and execute the external program
                 std::ifstream exec_trace_file(program_name + ".txt");
@@ -334,9 +334,10 @@ int main(int argc, char** argv) {
     if(!allocate_memory(&current)) {
         std::cerr << "ERROR! Memory allocation failed!" << std::endl;
     }
-    PCB_table.push_back(current);
 
     std::vector<PCB> wait_queue;
+
+    wait_queue.push_back(current);
 
     /******************ADD YOUR VARIABLES HERE*************************/
 
