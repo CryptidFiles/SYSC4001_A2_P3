@@ -1,6 +1,1 @@
-CPU, 100
-SYSCALL, 15    # Very fast device (68ms)
-END_IO, 15
-CPU, 100
-SYSCALL, 1    # Fast device (100ms)
-END_IO, 1
+

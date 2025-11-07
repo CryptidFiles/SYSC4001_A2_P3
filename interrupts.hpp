@@ -328,7 +328,7 @@ std::string print_PCB(PCB current, std::vector<PCB> _PCB) {
     }
     
     // Print bottom border
-    buffer << "+" << std::setfill('-') << std::setw(tableWidth) << "+" << std::endl;
+    buffer << "+" << std::setfill('-') << std::setw(tableWidth) << "+\n" << std::endl;
 
     return buffer.str();
 }

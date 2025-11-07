@@ -1,13 +1,7 @@
-CPU, 300
-SYSCALL, 8    # Very slow device (1000ms)
-END_IO, 8
-CPU, 300
-SYSCALL, 19    # Slow device (652ms)  
-END_IO, 19
-CPU, 300
-SYSCALL, 3    # Moderatly Slow device (300ms)  
-END_IO, 3
-CPU, 300
-SYSCALL, 3     # Slow device
-END_IO, 3
-CPU, 300
+# Mandatory test trace 3
+FORK, 20
+IF_CHILD, 0
+IF_PARENT, 0
+EXEC program1, 60
+ENDIF, 0
+CPU, 10

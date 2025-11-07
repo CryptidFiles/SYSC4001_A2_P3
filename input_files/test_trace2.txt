@@ -1,9 +1,7 @@
-# trace_high_overhead.txt
-CPU, 50
-SYSCALL, 15    # Very fast device (68ms)
-CPU, 45
-END_IO, 15
-CPU, 68
-SYSCALL, 8    # Very slow device (1000ms)
-CPU, 32
-END_IO, 8
+# Mandatory test trace 2
+FORK, 17 //fork is called
+IF_CHILD, 0
+EXEC program1, 16 //exec is called by child
+IF_PARENT,0
+ENDIF, 0
+CPU, 205 //CPU burst being called after the conditionals

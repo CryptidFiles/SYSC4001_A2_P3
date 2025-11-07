@@ -86,7 +86,7 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
             // Adjust current time with the ISR activities duration
             current_time = time;
 
-            execution += std::to_string(current_time) + ", " + std::to_string(delays[duration_intr]) + ", SYSCALL ISR (ADD STEPS HERE)\n";
+            execution += std::to_string(current_time) + ", " + std::to_string(delays[duration_intr]) + ", SYSCALL ISR\n";
             current_time += delays[duration_intr];
 
             execution += std::to_string(current_time) + ", " + std::to_string(IRET_TIME) + ", IRET\n\n";
@@ -106,7 +106,7 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
             current_time = time;
             execution += intr;
 
-            execution += std::to_string(current_time) + ", " + std::to_string(delays[duration_intr]) + ", ENDIO ISR(ADD STEPS HERE)\n";
+            execution += std::to_string(current_time) + ", " + std::to_string(delays[duration_intr]) + ", ENDIO ISR\n";
             current_time += delays[duration_intr];
 
             execution += std::to_string(current_time) + ", " + std::to_string(IRET_TIME) + ", IRET\n\n";
