@@ -5,7 +5,7 @@
  *
  */
 
-#include "interrupts.hpp"
+#include "interrupts_101299776_101187793.hpp"
 #include <cstdlib>
 #include <cmath>
 #include <queue>
@@ -18,7 +18,7 @@ unsigned int next_pid = 1;
 const int SWITCH_MODE_TIME = 1;          // Switch to/from kernel mode
 const int CONTEXT_SAVE_RESTORE_TIME = 10; // Save/restore context 
 const int ISR_ACTIVITY_TIME = 40;        // Execute activities in ISR
-const int IRET_TIME = 1;                 // IRET instruction? Ask prof on what that is?
+const int IRET_TIME = 1;                 // IRET instruction? 
 
 // State tracking variables
 bool in_user_mode = true;  // user or kernel mode
@@ -39,23 +39,6 @@ PCB create_child_pcb(const PCB& parent, const std::string& program_name = "") {
     
     return child;
 }
-
-/**  Function to add process to ready queue
-void add_to_ready_queue(PCB& process) {
-    ready_queue.push(&process);
-}
-
-// Function to get next process from ready queue
-PCB* get_next_process() {
-    if (ready_queue.empty()) return nullptr;
-    PCB* process = ready_queue.front();
-    ready_queue.pop();
-    return process;
-}*/
-
-
-
-
 
 std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string> trace_file, int time, std::vector<std::string> vectors, std::vector<int> delays, std::vector<external_file> external_files, PCB current, std::vector<PCB> wait_queue) {
 
@@ -269,7 +252,7 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
                 system_status += print_PCB(current, wait_queue);
 
                 // Load and execute the external program
-                std::ifstream exec_trace_file(program_name + ".txt");
+                std::ifstream exec_trace_file("programs/" + program_name + ".txt");
 
                 if(!exec_trace_file.is_open()) {
                     std::cerr << "ERROR: Cannot open program file " << program_name + ".txt" << std::endl;
@@ -339,16 +322,10 @@ int main(int argc, char** argv) {
 
     wait_queue.push_back(current);
 
-    /******************ADD YOUR VARIABLES HERE*************************/
 
     int current_time = 0;                    // Current simulation time in ms
 
     std::vector<std::string> execution_log;  // Store execution events
-
-
-
-    /******************************************************************/
-
 
     //Converting the trace file into a vector of strings.
     std::vector<std::string> trace_file;

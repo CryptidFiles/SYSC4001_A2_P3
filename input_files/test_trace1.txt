@@ -1,5 +1,4 @@
-# Mandatory test trace 1
-FORK, 10  
+FORK, 10      // Mandatory test trace 1
 IF_CHILD, 0
 EXEC program1, 50 
 IF_PARENT, 0

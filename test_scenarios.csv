@@ -1,0 +1,47 @@
+scenario_id,description,trace_content,external_files_content,programs
+scenario1,Basic fork and exec,"FORK,10
+IF_CHILD,0
+EXEC,program1,50
+IF_PARENT,0
+EXEC,program2,25
+ENDIF,0
+CPU,100","program1,10
+program2,15
+program3,8","program1:CPU,100;program2:SYSCALL,4
+CPU,50;program3:CPU,80
+SYSCALL,7
+CPU,30"
+scenario2,Nested fork,"FORK,17
+IF_CHILD,0
+EXEC,calc,16
+IF_PARENT,0
+ENDIF,0
+EXEC,editor,33
+CPU,150","calc,12
+editor,18
+browser,25","calc:FORK,15
+IF_CHILD,0
+CPU,30
+IF_PARENT,0
+CPU,40
+ENDIF,0
+CPU,20;editor:CPU,80
+SYSCALL,7
+CPU,30;browser:CPU,100
+SYSCALL,12
+CPU,50"
+scenario3,IO Intensive,"FORK,20
+IF_CHILD,0
+IF_PARENT,0
+EXEC,io_program,60
+ENDIF,0
+EXEC,cpu_intensive,45
+CPU,75","io_program,8
+cpu_intensive,20
+utility,5","io_program:CPU,50
+SYSCALL,6
+CPU,15
+END_IO,6;cpu_intensive:CPU,200
+CPU,100;utility:CPU,25
+SYSCALL,7
+CPU,15"

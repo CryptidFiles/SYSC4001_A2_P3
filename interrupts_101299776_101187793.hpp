@@ -21,10 +21,6 @@
 #define MEM_LIMIT   1
 
 
-
-
-
-
 struct memory_partition_t {
     const unsigned int partition_number;
     const unsigned int size;
@@ -190,8 +186,18 @@ std::tuple<std::string, int, std::string> parse_trace(std::string trace) {
     }
 
     auto activity = parts[0];
-    auto duration_intr = std::stoi(parts[1]);
+    int duration_intr = -1;
     std::string extern_file = "null";
+
+    // Only try to convert to int if it's a numeric activity
+    if (activity != "IF_CHILD" && activity != "IF_PARENT" && activity != "ENDIF") {
+        try {
+            duration_intr = std::stoi(parts[1]);
+        } catch (const std::invalid_argument& e) {
+            std::cerr << "Error: Invalid number in trace line: " << trace << std::endl;
+            return {"null", -1, "null"};
+        }
+    }
 
     auto exec = split_delim(parts[0], " ");
     if(exec[0] == "EXEC") {
@@ -201,6 +207,8 @@ std::tuple<std::string, int, std::string> parse_trace(std::string trace) {
 
     return {activity, duration_intr, extern_file};
 }
+
+
 
 //Default interrupt boilerplate
 std::pair<std::string, int> intr_boilerplate(int current_time, int intr_num, int context_save_time, std::vector<std::string> vectors) {
