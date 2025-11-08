@@ -11,7 +11,6 @@
 #include <queue>
 
 // Global variables for process management
-//std::vector<PCB> PCB_table;
 unsigned int next_pid = 1;
 
 // Constants for interrupt processing times
@@ -105,8 +104,6 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
             execution += intr;
             current_time = time;
 
-            ///////////////////////////////////////////////////////////////////////////////////////////
-            //Add your FORK output here
             // Clone PCB for child
             execution += std::to_string(current_time) + ", " + std::to_string(duration_intr) + ", cloning the PCB\n";
             current_time += duration_intr;
@@ -135,8 +132,6 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
                 system_status += "time: " + std::to_string(current_time) + "; current trace: " + trace + "\n";
                 system_status += print_PCB(child, wait_queue);
 
-
-                ///////////////////////////////////////////////////////////////////////////////////////////
 
                 //The following loop helps you do 2 things:
                 // * Collect the trace of the child (and only the child, skip parent)
@@ -171,8 +166,8 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
                     }
                 }
 
-                ///////////////////////////////////////////////////////////////////////////////////////////
-                //With the child's trace, run the child (HINT: think recursion)
+
+                //With the child's trace, run the child (recursive)
                 if(!child_trace.empty()) {
                     auto [child_exec, child_status, child_time] = simulate_trace(child_trace, current_time, 
                                                                                 vectors, delays, external_files, 
@@ -184,8 +179,6 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
 
                 i = parent_index; // Continue with parent from IF_PARENT
 
-
-                ///////////////////////////////////////////////////////////////////////////////////////////
             } else {
                 std::cerr << "ERROR: Memory allocation failed for child process!" << std::endl;
                 execution += std::to_string(current_time) + ", 0, memory allocation failed for child\n\n";

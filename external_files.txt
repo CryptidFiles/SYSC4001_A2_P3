@@ -5,4 +5,6 @@ program4, 15
 program5, 10
 program6, 5
 program7, 15
-program 
+program8, 25
+program9, 35
+too_large, 100
